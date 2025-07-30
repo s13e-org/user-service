@@ -1,0 +1,17 @@
+POST http://localhost:8081/auth/signin
+Content-Type: application/json
+
+{
+  "username": "anh",
+  "password": "123"
+}
+
+###
+POST http://localhost:8081/auth/signup
+Content-Type:  application/json
+
+{
+    "username": "anh",
+    "password": "123",
+    "email": "example.com"
+}
