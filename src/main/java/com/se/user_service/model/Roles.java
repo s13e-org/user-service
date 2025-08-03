@@ -9,6 +9,12 @@ public class Roles {
     private String description;
     private List<Permissions> permissions;
 
+    public Roles(UUID roleId, String roleName, String description, List<Permissions> permissions) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+        this.description = description;
+        this.permissions = permissions;
+    }
     public UUID getRoleId() {
         return roleId;
     }

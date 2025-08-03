@@ -9,6 +9,14 @@ public class RefreshToken {
     private Instant expiryDate;
     private UUID userId;
 
+    public RefreshToken() {
+    }
+    // public RefreshToken(UUID id, String token, Instant expiryDate, UUID userId) {
+    //     this.id = id;
+    //     this.token = token;
+    //     this.expiryDate = expiryDate;
+    //     this.userId = userId;
+    // }
     public UUID getId() {
         return id;
     }

@@ -7,6 +7,11 @@ public class Permissions {
     private String permissionName;
     private String description;
     
+    public Permissions(UUID permissionId, String permissionName, String description) {
+        this.permissionId = permissionId;
+        this.permissionName = permissionName;
+        this.description = description;
+    }
     public UUID getPermissionId() {
         return permissionId;
     }

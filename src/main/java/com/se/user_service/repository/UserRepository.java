@@ -1,12 +1,14 @@
 package com.se.user_service.repository;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Repository;
 
 import com.se.user_service.dto.SignupRequestDTO;
@@ -53,13 +55,26 @@ public class UserRepository {
     public boolean insert (SignupRequestDTO dto, String passwordHash){
         UUID userId = UUIDUtil.generateUuidV7();
         Object[] params = {
-            userId,
+            UUIDUtil.uuidToBytes(userId),
             dto.getUsername(),
             dto.getEmail(),
             passwordHash,
-            LocalTime.now()
+            LocalDateTime.now()
         };
-        int row = jdbcTemplate.update("insert into users (user_id, username, email, password_hash,created_at)", params);
+        int row = jdbcTemplate.update("insert into users (user_id, username, email, password_hash,created_at) values (?, ?, ?, ?, ?)", params);
         return row > 0;
     }
+
+    public List<GrantedAuthority> findAuthoritiesByUserId(UUID userId) {
+    String sql = """
+        SELECT r.role_name
+        FROM user_roles ur
+        JOIN roles r ON ur.role_id = r.role_id
+        WHERE ur.user_id = ?
+    """;
+    return jdbcTemplate.query(sql, new Object[]{UUIDUtil.uuidToBytes(userId)},
+        (rs, rowNum) -> new SimpleGrantedAuthority(rs.getString("role_name"))
+    );
+}
+
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.se.user_service.model.Users;
+import com.se.user_service.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -71,11 +72,8 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetails build(Users user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-        .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-        .collect(Collectors.toList());
 
+    public static UserDetails build(Users user, List<GrantedAuthority> authorities) {
         return new UserDetailsImpl(
             user.getUserId(), 
             user.getUsername(), 

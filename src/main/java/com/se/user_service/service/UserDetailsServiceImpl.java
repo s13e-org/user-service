@@ -1,5 +1,8 @@
 package com.se.user_service.service;
 
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Users user = userRepository.findByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-
-    return UserDetailsImpl.build(user);
+    List<GrantedAuthority> authorities = userRepository.findAuthoritiesByUserId(user.getUserId());
+    return UserDetailsImpl.build(user, authorities);
   }
 }

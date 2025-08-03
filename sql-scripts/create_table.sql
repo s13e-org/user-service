@@ -25,6 +25,17 @@ CREATE TABLE permissions (
     description VARCHAR(255)
 );
 
+CREATE TABLE permission_endpoints (
+    id BINARY(16) PRIMARY KEY,
+    permission_id BINARY(16) NOT NULL,
+    http_method VARCHAR(10), 
+    endpoint_path VARCHAR(255) NOT NULL, -- /api/users, /api/products/:id
+    check (http_method in ('GET', 'POST', 'PUT', 'DELETE')),
+    FOREIGN KEY (permission_id) REFERENCES permissions(permission_id) ON DELETE CASCADE,
+    UNIQUE(permission_id, http_method, endpoint_path)
+);
+
+
 CREATE TABLE user_roles (
     user_id BINARY(16),
     role_id BINARY(16),

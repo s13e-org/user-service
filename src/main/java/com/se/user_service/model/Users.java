@@ -13,9 +13,9 @@ public class Users {
     private String avatarUrl;
     private String phoneNumber;
     private Boolean isActive;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-    private List<Roles> roles;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    // private List<Roles> roles;
 
     
     public Users(String username, String email, String passwordHash) {
@@ -23,17 +23,32 @@ public class Users {
         this.email = email;
         this.passwordHash = passwordHash;
     }
+    public Users() {
+    }
+    public Users(UUID userId, String username, String email, String passwordHash, String fullName, String avatarUrl,
+            String phoneNumber, Boolean isActive, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.userId = userId;
+        this.username = username;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.fullName = fullName;
+        this.avatarUrl = avatarUrl;
+        this.phoneNumber = phoneNumber;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
     public LocalDateTime getCreateAt() {
-        return createAt;
+        return createdAt;
     }
     public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
+        this.createdAt = createAt;
     }
     public LocalDateTime getUpdateAt() {
-        return updateAt;
+        return updatedAt;
     }
     public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
+        this.updatedAt = updateAt;
     }
     public UUID getUserId() {
         return userId;
@@ -83,11 +98,11 @@ public class Users {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
-    public List<Roles> getRoles() {
-        return roles;
-    }
-    public void setRoles(List<Roles> roles) {
-        this.roles = roles;
-    }
+    // public List<Roles> getRoles() {
+    //     return roles;
+    // }
+    // public void setRoles(List<Roles> roles) {
+    //     this.roles = roles;
+    // }
 
 }

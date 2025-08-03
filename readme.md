@@ -1,3 +1,5 @@
+## Chức năng
+
 🔐 1. Xác thực (Authentication)
 - Đăng ký (Sign up)
 
@@ -50,3 +52,7 @@
 - Đăng nhập bằng Google, Facebook, Apple (OAuth2)
 
 - Đồng bộ dữ liệu người dùng với hệ thống CRM, Analytics
+
+## Diagram
+
+![diagram](user_service.png)
