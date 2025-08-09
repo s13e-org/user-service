@@ -34,12 +34,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<String>> handleGenericException(Exception ex) {
+        String detailedMessage = ex.getMessage();
+        if (detailedMessage == null && ex.getCause() != null) {
+            detailedMessage = ex.getCause().getMessage();
+        }
         return ResponseEntity.internalServerError().body(
             new BaseResponse.Builder<String>()
                 .requestId(MDC.get("request_id"))
                 .errorCode(9999)
                 .message("Lỗi không xác định")
-                .messageDetail(ex.getMessage())
+                .messageDetail(detailedMessage)
                 .data(null)
                 .build()
         );

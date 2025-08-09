@@ -25,6 +25,7 @@ import com.se.user_service.exception.TokenRefreshException;
 import com.se.user_service.helper.JwtUtils;
 import com.se.user_service.model.RefreshToken;
 import com.se.user_service.model.Roles;
+import com.se.user_service.model.UserDetailsImpl;
 import com.se.user_service.model.Users;
 import com.se.user_service.repository.RoleRepository;
 import com.se.user_service.repository.UserRepository;
@@ -32,7 +33,6 @@ import com.se.user_service.response.BaseResponse;
 import com.se.user_service.response.Message;
 import com.se.user_service.service.AuthService;
 import com.se.user_service.service.RefreshTokenService;
-import com.se.user_service.service.UserDetailsImpl;
 
 import jakarta.validation.Valid;
 
@@ -70,9 +70,6 @@ public class AuthController {
     String jwt = jwtUtils.generateJwtToken(authentication);
 
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    List<String> roles = userDetails.getAuthorities().stream()
-        .map(item -> item.getAuthority())
-        .collect(Collectors.toList());
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
     TokenResponse data = new TokenResponse(jwt, refreshToken.getToken());
     BaseResponse<TokenResponse> response = new BaseResponse<>();

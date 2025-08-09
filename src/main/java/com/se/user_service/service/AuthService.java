@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.se.user_service.dto.SignupRequestDTO;
 import com.se.user_service.model.Roles;
@@ -23,6 +24,7 @@ public class AuthService {
         this.encoder = passwordEncoder;
     }
 
+    @Transactional
     public boolean signUp(SignupRequestDTO signUpRequest) {
         String hashedPassword = encoder.encode(signUpRequest.getPassword());
         boolean userI = userRepo.insert(signUpRequest, hashedPassword);

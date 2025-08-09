@@ -56,10 +56,29 @@ public class GenericRowMapper<T> implements RowMapper<T>{
                 try {
                     field = clazz.getDeclaredField(fieldName);
                 } catch (NoSuchFieldException e) {
+                    log.debug("No field '{}' in class '{}', skip", fieldName, clazz.getSimpleName());
                     continue;
                 }
 
                 field.setAccessible(true);
+
+                if (value == null) {
+                    if (field.getType().isPrimitive()) {
+                        // set giá trị mặc định cho primitive
+                        if (field.getType().equals(int.class)) {
+                            field.setInt(obj, 0);
+                        } else if (field.getType().equals(long.class)) {
+                            field.setLong(obj, 0L);
+                        } else if (field.getType().equals(boolean.class)) {
+                            field.setBoolean(obj, false);
+                        } else {
+                            // các primitive 
+                        }
+                    } else {
+                        field.set(obj, null);
+                    }
+                    continue;
+                }
                 
                 if (field.getType().equals(UUID.class) && value instanceof byte[]) {
                     field.set(obj, UUIDUtil.bytesToUuid((byte[]) value));

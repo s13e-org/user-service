@@ -2,6 +2,9 @@ package com.se.user_service.helper;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.se.user_service.service.UserDetailsImpl;
+import com.se.user_service.model.UserDetailsImpl;
+import com.se.user_service.model.Users;
+import com.se.user_service.service.PermissionsService;
+import com.se.user_service.service.UserService;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.*;
@@ -23,6 +24,8 @@ import io.jsonwebtoken.*;
 @Component
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private static UserService userService;
+    private static PermissionsService permissionsService;
 
     @Value("${se.app.jwtSecret}")
     private String jwtSecret;
@@ -36,6 +39,7 @@ public class JwtUtils {
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
+                .claim("permissions", userPrincipal.getPermissions())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
@@ -56,10 +60,20 @@ public class JwtUtils {
     }
 
     public String generateTokenFromUsername(String username) {
-        return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+        Users user = userService.findByUsername(username).get();
+        List<String> roles = userService.getRolesByUserId(user.getUserId());
+        Set<String> permissions = null;
+        for (String role : roles) {
+            permissions = permissionsService.getPermissionsByRole(role);     
+        }
+        return Jwts.builder()
+            .setSubject(user.getUserId().toString())
+            .claim("username", username)
+            .claim("permissions", permissions)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .compact();
     }
 
     public boolean validateJwtToken(String authToken) {
@@ -79,5 +93,20 @@ public class JwtUtils {
         }
 
         return false;
+    }
+
+    public Map<String, Object> extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public Claims getClaimsFromJwtToken(String jwt) {
+        return Jwts.parserBuilder()
+                .setSigningKey(jwtSecret) 
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
     }
 }

@@ -1,5 +1,6 @@
 package com.se.user_service.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,5 +23,11 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
     
-    
+    public List<String> getRolesByUserId(UUID id){
+        return userRepository.getRolesByUserId(id);
+    }
+
+    public Optional<Users> findByUsername (String username){
+        return userRepository.findByUsername(username);
+    }
 }

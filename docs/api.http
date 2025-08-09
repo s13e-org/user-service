@@ -1,0 +1,25 @@
+@token = Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnYXRld2F5IiwicGVybWlzc2lvbnMiOlsiR0VUX1BFUk1JU1NJT04iXSwiaWF0IjoxNzU0NjIzOTgyLCJleHAiOjE3NTQ3MTAzODJ9.iGZl2-0TACQXK3Sn47CWSLHb1CX8dkYjp5eW51Cio8k
+
+###
+POST http://localhost:8081/auth/signin
+Content-Type: application/json
+
+{
+  "username": "gateway",
+  "password": "123"
+}
+
+###
+POST http://localhost:8081/auth/signup
+Content-Type:  application/json
+
+{
+    "username": "anh",
+    "password": "123",
+    "email": "example.com"
+}
+
+###
+
+GET  http://localhost:8081/permissions/endpoint-user
+Authorization: {{token}}

@@ -9,6 +9,10 @@ public class Roles {
     private String description;
     private List<Permissions> permissions;
 
+    
+
+    public Roles() {
+    }
     public Roles(UUID roleId, String roleName, String description, List<Permissions> permissions) {
         this.roleId = roleId;
         this.roleName = roleName;
