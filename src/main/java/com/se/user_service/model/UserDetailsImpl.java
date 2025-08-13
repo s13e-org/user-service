@@ -1,9 +1,6 @@
 package com.se.user_service.model;
 
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.se.user_service.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserDetailsImpl implements UserDetails {

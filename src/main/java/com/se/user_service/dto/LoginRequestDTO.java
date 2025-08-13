@@ -1,7 +1,5 @@
 package com.se.user_service.dto;
 
-import java.util.UUID;
-
 public class LoginRequestDTO {
     private String username;
     private String password;

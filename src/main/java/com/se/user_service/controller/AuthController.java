@@ -1,10 +1,5 @@
 package com.se.user_service.controller;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,12 +16,11 @@ import com.se.user_service.dto.LoginRequestDTO;
 import com.se.user_service.dto.SignupRequestDTO;
 import com.se.user_service.dto.TokenRefreshRequest;
 import com.se.user_service.dto.TokenResponse;
+import com.se.user_service.dto.ValidateTokenResponse;
 import com.se.user_service.exception.TokenRefreshException;
 import com.se.user_service.helper.JwtUtils;
 import com.se.user_service.model.RefreshToken;
-import com.se.user_service.model.Roles;
 import com.se.user_service.model.UserDetailsImpl;
-import com.se.user_service.model.Users;
 import com.se.user_service.repository.RoleRepository;
 import com.se.user_service.repository.UserRepository;
 import com.se.user_service.response.BaseResponse;
@@ -34,6 +28,7 @@ import com.se.user_service.response.Message;
 import com.se.user_service.service.AuthService;
 import com.se.user_service.service.RefreshTokenService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -111,10 +106,31 @@ public class AuthController {
     if (ok) {
       response.setErrorCode(0);
       response.setMessage(Message.SUCCESS);
-    }else{
+    } else {
       response.setErrorCode(1);
       response.setMessage(Message.FAIL);
     }
     return ResponseEntity.ok(response);
   }
+
+  @PostMapping("/validate-token")
+  public ResponseEntity<BaseResponse<ValidateTokenResponse>> validateToken(HttpServletRequest request) {
+    String authHeader = request.getHeader("Authorization");
+    String token = "";
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
+    }
+    boolean ok = jwtUtils.validateJwtToken(token);
+
+    ValidateTokenResponse validateTokenResponse = new ValidateTokenResponse();
+    validateTokenResponse.setValid(ok);
+
+    BaseResponse<ValidateTokenResponse> response = new BaseResponse<>();
+    response.setErrorCode(ok ? 0 : 1);
+    response.setMessage(ok ? Message.SUCCESS : Message.FAIL);
+    response.setData(validateTokenResponse);
+
+    return ResponseEntity.ok().body(response);
+  }
+
 }
